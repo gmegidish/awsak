@@ -21,7 +21,7 @@ export class TextOpcode extends Opcode {
 
 	private getStringById(id: number): string {
 
-		const strings: Array<number, string> = [
+		const strings: Array<[number, string]> = [
 			[0x001, "P E A N U T  3000"],
 			[0x002, "Copyright  } 1990 Peanut Computer, Inc.\nAll rights reserved.\n\nCDOS Version 5.01"],
 			[0x003, "2"],
