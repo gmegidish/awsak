@@ -39,7 +39,7 @@ import {DisassemblerOpcodeVisitor, LabelsOpcodeVisitor, OpcodeVisitor} from "./o
 import {PgmUtils} from "./pgm-utils";
 import {Polygon, SvgUtils} from "./svg-utils";
 import {BufferedFileSpy} from "./io/buffered-file-spy";
-import assert from "assert";
+import assert = require("assert");
 
 const RESOURCE_TYPE_SOUND = 0;
 const RESOURCE_TYPE_MUSIC = 1;
