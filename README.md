@@ -69,8 +69,8 @@ This project is licensed under the GPL License - see the [LICENSE](LICENSE) file
 
 ## References
 
-* [Another World](https://www.mobygames.com/game/another-world) on MobyGames
-* [Another World](https://www.gog.com/game/another_world) on GOG
+* [Another World](https://www.mobygames.com/game/564/out-of-this-world/) on MobyGames
+* [Another World](https://www.gog.com/en/game/another_world_20th_anniversary_edition) on GOG
 * [Another World](https://anotherworld.fr/another_world.htm) on Eric Chahi's website. Includes screenshots of editor and assembly language.
 * Cyx's [Another World Interpreter](https://github.com/cyxx/rawgl) with support for most released versions.
 * [Fabien Sanglard's Another World](https://fabiensanglard.net/another_world_polygons/index.html) with detailed technical explanation of the game's engine.
