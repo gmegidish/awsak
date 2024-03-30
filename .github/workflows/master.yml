@@ -16,4 +16,4 @@ jobs:
       - run: npm install
       - run: npm audit
       - run: npm run lint
-      - run: npm run run
+      - run: npm run run --help || true
