@@ -110,11 +110,11 @@ export class AWSAK {
 		this.configure();
 	}
 
-	private extract(options: {}) {
+	private extract(options: {indir: string, outdir: string}) {
 		const memlist = new MemlistReader();
-		memlist.parse(BufferedFile.openFile("disk/Memlist.bin"));
+		memlist.parse(BufferedFile.openFile(`${options.indir}/Memlist.bin`));
 
-		fs.mkdirSync("resources", {recursive: true});
+		fs.mkdirSync(options.outdir, {recursive: true});
 		memlist.getEntries().forEach((entry: MemEntry, index: number) => {
 			// console.log("Extracting", entry);
 
@@ -124,10 +124,10 @@ export class AWSAK {
 				hex = "0" + hex;
 			}
 
-			const buf = reader.read(entry, BufferedFile.openFile(`disk/Bank${hex}`));
+			const buf = reader.read(entry, BufferedFile.openFile(`${options.indir}/Bank${hex}`));
 
 			const ext = this.resourceTypeToExtension(entry.type);
-			fs.writeFileSync(`resources/${index.toString(16).padStart(4, "0")}.${ext}`, buf);
+			fs.writeFileSync(`${options.outdir}/${index.toString(16).padStart(4, "0")}.${ext}`, buf);
 		});
 	}
 
@@ -968,6 +968,8 @@ export class AWSAK {
 		this.program
 		.command('extract')
 		.description('Extract files')
+		.requiredOption('--indir <dir>', 'Specify input directory')
+		.requiredOption('--outdir <dir>', 'Specify output directory')
 		.action((options) => this.extract(options));
 
 		this.program
