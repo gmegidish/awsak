@@ -12,7 +12,7 @@ For technical details about how this cli tool came to be, as well as other proje
 - Pack resources back into memlist
 - Decompile bytecode into assembly code
 - Compile assembly code into bytecode
-- Convert background resource to a pgm
+- Convert background resource to a bmp
 - Convert shapes into .svg files
 
 ## Installation
@@ -42,7 +42,7 @@ Options:
   -h, --help           display help for command
 
 Commands:
-  extract              Extract files
+  extract [options]    Extract files
   pack [options]       Pack files
   compile [options]    Compile assembly to bytecode
   decompile [options]  Decompile bytecode into assembly
@@ -52,9 +52,90 @@ Commands:
   help [command]       display help for command
 ```
 
-Each command has its own help, for example:
+## Extracting and Packing Resources
+
+Awsak can extract and pack resources back to what is called a memlist. The MSDOS distribution of Another World included these files:
+
+```text
+ANOTHER.EXE
+MEMLIST.BIN
+BANK01
+BANK02
+BANK03
+BANK04
+BANK05
+BANK06
+BANK07
+BANK08
+BANK09
+BANK0A
+BANK0B
+BANK0C
+BANK0D
+```
+
+To extract resources, use the `extract` command. Where `disk` is the source directory that includes the files listed above.
+
 ```bash
-awsak compile --help
+awsak extract --indir disk --outdir resources
+```
+
+Upon completion, our `resources` directory will contains these files (and many others):
+
+```text
+0010.snd
+0011.bin
+0012.pic
+0013.pic
+0014.pal
+0015.txt
+0016.shp
+```
+
+While there are no filenames in the `memlist.bin` file, awsak will use the resource number as the filename, and the resource type as extension:
+
+```text
+snd - sound files
+pic - 320x200 images (used for logos and some complicated backgrounds)
+pal - palette files (32 palettes of 16 colors)
+txt - script files
+shp - shapes files (vector graphics)
+```
+
+To back the resources back into a memlist file, use the `pack` command. So to reverse the process, simply run
+
+```bash
+awsak pack --indir resources --outdir disk
+```
+
+One thing you will notice, is that current implementation does not support lzss compression when packing. This means that the output files are larger than the originals on disk.
+
+## Modifying Scripts
+
+Another World was written on an Amiga using GFA-Basic. It features a bytecode implementation (a virtual machine) that allowed it to be ported easily to every platform imagined. This virtual machine supports 64 threads running in cooperative mode, with maximum code size of 64KB, and a memory layout of 256 variables. 
+
+Awsak can decompile this bytecode into assembly code, and then compile it back into bytecode form. It was important to keep the format of the files as close as to Eric Chahi's original implementation. You can refer to the technical explanation of the instruction set [here](https://anotherworld.fr/another_world.htm).  
+
+![Screenshot of Eric's editor](https://anotherworld.fr/images/another_world/editeur2.gif)
+
+An output disassembly file will look like this:
+
+```javascript
+        seti    v1      50
+L0139:  break
+        dbra    v1      L0139
+        seti    v1      35
+        seti    v255    5
+L0146:  break
+        text    400     3       168     11 // Good evening professor.
+        dbra    v1      L0147
+        seti    v1      49
+        seti    v255    5
+L0159:  break
+        text    401     3       168     11 // I see you have driven here in your\nFerrari.
+        dbra    v1      L0159
+        setvec  8       L0290
+        break
 ```
 
 ## Contribution
