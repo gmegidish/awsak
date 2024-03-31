@@ -894,11 +894,6 @@ export class AWSAK {
 	}
 
 	private pack(options: { indir: string, outdir: string }) {
-		if (!("indir" in options && "outdir" in options)) {
-			console.error("Please specify input and output directories");
-			process.exit(1);
-		}
-
 		const files = fs.readdirSync(options.indir)
 		.filter((file) => file.match(/^[0-9a-f]{4}\.(bin|snd|mus|pic|pal|shp|txt)$/))
 		.sort();
@@ -975,43 +970,43 @@ export class AWSAK {
 		this.program
 		.command('pack')
 		.description('Pack files')
-		.option('--indir <dir>', 'Specify input directory')
-		.option('--outdir <dir>', 'Specify output directory')
+		.requiredOption('--indir <dir>', 'Specify input directory')
+		.requiredOption('--outdir <dir>', 'Specify output directory')
 		.action((options) => this.pack(options));
 
 		this.program
 		.command('compile')
 		.description("Compile assembly to bytecode")
-		.option('--file <path>', 'Specify input filename to compile')
-		.option('--outfile <path>', 'Specify output filename')
+		.requiredOption('--file <path>', 'Specify input filename to compile')
+		.requiredOption('--outfile <path>', 'Specify output filename')
 		.action((options) => this.compile(options));
 
 		this.program
 		.command('decompile')
 		.description("Decompile bytecode into assembly")
-		.option('--file <path>', 'Specify input filename to decompile')
+		.requiredOption('--file <path>', 'Specify input filename to decompile')
 		.action((options) => this.decompile(options));
 
 		this.program
 		.command('scr2pgm')
 		.description("Convert background resource to a pgm")
-		.option('--scr <filename>', 'Specify resource .pic filename')
-		.option('--output <filename>', 'Specify output filename (pgm)')
+		.requiredOption('--scr <filename>', 'Specify resource .pic filename')
+		.requiredOption('--output <filename>', 'Specify output filename (pgm)')
 		.action((options: any) => this.scr2pgm(options));
 
 		this.program
 		.command('pal2act')
 		.description("Convert a single palette into photoshop act format")
-		.option('--palette <filename>', 'Specify the palette file')
-		.option('--index <number>', 'Specify the palette index (0-31)')
-		.option('--output <filename>', 'Specify output filename (.act)')
+		.requiredOption('--palette <filename>', 'Specify the palette file')
+		.requiredOption('--index <number>', 'Specify the palette index (0-31)')
+		.requiredOption('--output <filename>', 'Specify output filename (.act)')
 		.action((options: any) => this.pal2act(options));
 
 		this.program
 		.command('pgm2scr')
 		.description("Convert a png to background resource")
-		.option('--scr <path>', 'Specify output filename (eg 0013.scr)')
-		.option('--infile <path>', 'Specify input filename (pgm)')
+		.requiredOption('--scr <path>', 'Specify output filename (eg 0013.scr)')
+		.requiredOption('--infile <path>', 'Specify input filename (pgm)')
 		.action((options: any) => this.pgm2scr(options));
 	}
 
