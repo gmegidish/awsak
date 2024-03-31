@@ -15,12 +15,12 @@ export class MemlistReader {
 
 		while (true) {
 			const state = f.readByte();
-			if (state === MEMENTRY_STATE_END_OF_MEMLIST) { // Assuming 0xFF marks the end of the entries
+			if (state === MEMENTRY_STATE_END_OF_MEMLIST) {
 				break;
 			}
 
 			const type = f.readByte();
-			f.readUint16(); // Skip 2 bytes
+			f.readUint16();
 
 			const memEntry: MemEntry = {
 				state,
@@ -38,6 +38,6 @@ export class MemlistReader {
 			this.entries.push(memEntry);
 		}
 
-		console.log("Loaded " + this.entries.length + " entries from memlist");
+		// console.log("Loaded " + this.entries.length + " entries from memlist");
 	}
 }
