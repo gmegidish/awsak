@@ -17,6 +17,11 @@ export abstract class OutputFile {
 		this.writeByte(value & 0xff);
 	}
 
+	public writeUint16LE(value: number) {
+		this.writeByte(value & 0xff);
+		this.writeByte(value >> 8);
+	}
+
 	public writeUint16At(offset: number, value: number) {
 		this.writeByteAt(offset, value >> 8);
 		this.writeByteAt(offset + 1, value & 0xff);
@@ -27,6 +32,13 @@ export abstract class OutputFile {
 		this.writeByte((value >> 16) & 0xff);
 		this.writeByte((value >> 8) & 0xff);
 		this.writeByte(value & 0xff);
+	}
+
+	public writeUint32LE(value: number) {
+		this.writeByte(value & 0xff);
+		this.writeByte((value >> 8) & 0xff);
+		this.writeByte((value >> 16) & 0xff);
+		this.writeByte(value >> 24);
 	}
 }
 

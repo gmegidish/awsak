@@ -39,6 +39,7 @@ import {DisassemblerOpcodeVisitor, LabelsOpcodeVisitor, OpcodeVisitor} from "./o
 import {PgmUtils} from "./pgm-utils";
 import {Polygon, SvgUtils} from "./svg-utils";
 import {BufferedFileSpy} from "./io/buffered-file-spy";
+import {VgaUtils} from "./vga-utils";
 import assert = require("assert");
 
 const RESOURCE_TYPE_SOUND = 0;
@@ -110,7 +111,7 @@ export class AWSAK {
 		this.configure();
 	}
 
-	private extract(options: {indir: string, outdir: string}) {
+	private extract(options: { indir: string, outdir: string }) {
 		const memlist = new MemlistReader();
 		memlist.parse(BufferedFile.openFile(`${options.indir}/Memlist.bin`));
 
@@ -225,14 +226,11 @@ export class AWSAK {
 		fs.writeFileSync(filename, out);
 	}
 
-	private loadPalette(palette: string): Array<[number, number, number]> {
-		const args = palette.split(".");
-		const index = args[0]
-		const part = parseInt(args[1], 10);
-		const data = fs.readFileSync(`resources/${index}.pal`);
+	private loadPalette(palette: string, index: number): Array<[number, number, number]> {
+		const data = fs.readFileSync(palette);
 		const buf = BufferedFile.open(data);
-		buf.seek(part * 16 * 2);
-		const out:Array<[number, number, number]> = [];
+		buf.seek(index * 16 * 2);
+		const out: Array<[number, number, number]> = [];
 		for (let i = 0; i < 16; i++) {
 			const c = buf.readUint16();
 			const r = ((c >> 8) & 0xf) << 4;
@@ -280,15 +278,65 @@ export class AWSAK {
 		fs.writeFileSync(options.output, out.toUint8Array());
 	}
 
-	public scr2pgm(options: { scr: string, palette: string, output: string }) {
-		const buf = fs.readFileSync(options.scr);
+	public pic2bmp(options: { pic: string, palette: string, index: number, output: string }) {
+		const buf = fs.readFileSync(options.pic);
 		if (buf.length != 32000) {
-			console.error("File " + options.scr + " is not 32000 bytes long");
+			console.error("File " + options.pic + " is not 32000 bytes long");
 			process.exit(1);
 		}
 
-		const str = PgmUtils.scr2pgm(buf);
-		fs.writeFileSync(options.output, str);
+		const screen = VgaUtils.toLinear(buf);
+
+		const out = OutputBufferedFile.create();
+		out.writeUint16LE(0x4d42); // BM
+		out.writeUint32LE(320 * 200 * 3 + 54); // filesize
+		out.writeUint16LE(0); // reserved
+		out.writeUint16LE(0); // reserved
+		out.writeUint32LE(54); // offset to data
+		out.writeUint32LE(40); // size of DIB header
+		out.writeUint32LE(320); // width
+		out.writeUint32LE(200); // height
+		out.writeUint16LE(1); // planes
+		out.writeUint16LE(8); // bits per pixel
+		out.writeUint32LE(0); // compression
+		out.writeUint32LE(320 * 200); // size of image
+		out.writeUint32LE(0); // horizontal resolution
+		out.writeUint32LE(0); // vertical resolution
+		out.writeUint32LE(0); // colors in color table
+		out.writeUint32LE(0); // important color count
+
+		if (!options.palette) {
+			// palette not specified, use 16 colors of grayscale
+			for (let i = 0; i < 16; i++) {
+				const c = (i << 4) + i;
+				out.writeByte(c);
+				out.writeByte(c);
+				out.writeByte(c);
+				out.writeByte(0);
+			}
+		}
+
+		if (options.palette) {
+			const palette = this.loadPalette(options.palette, options.index || 0);
+			for (let i = 0; i < 16; i++) {
+				const [r, g, b] = palette[i];
+				out.writeByte(b);
+				out.writeByte(g);
+				out.writeByte(r);
+				out.writeByte(0);
+			}
+		}
+
+		for (let i = 16; i < 256; i++) {
+			out.writeUint32LE(0);
+		}
+
+		// bmp files are upside-down
+		for (let y = 199; y >= 0; y--) {
+			out.writeBytes(screen.slice(y * 320, (y + 1) * 320));
+		}
+
+		fs.writeFileSync(options.output, out.toUint8Array());
 	}
 
 	private accept(reader: BufferedFile, visitor: OpcodeVisitor) {
@@ -988,25 +1036,19 @@ export class AWSAK {
 		.action((options) => this.decompile(options));
 
 		this.program
-		.command('scr2pgm')
-		.description("Convert background resource to a pgm")
-		.requiredOption('--scr <filename>', 'Specify resource .pic filename')
-		.requiredOption('--output <filename>', 'Specify output filename (pgm)')
-		.action((options: any) => this.scr2pgm(options));
-
-		this.program
-		.command('pal2act')
-		.description("Convert a single palette into photoshop act format")
-		.requiredOption('--palette <filename>', 'Specify the palette file')
-		.requiredOption('--index <number>', 'Specify the palette index (0-31)')
-		.requiredOption('--output <filename>', 'Specify output filename (.act)')
-		.action((options: any) => this.pal2act(options));
+		.command('pic2bmp')
+		.description("Convert a .pic resource to an 8-bit .bmp")
+		.requiredOption('--pic <filename>', 'Specify resource .pic filename')
+		.option('--palette <filename>', 'Specify resource .pal filename)')
+		.option('--index <filename>', 'Palette index within resource (0-31)')
+		.requiredOption('--output <filename>', 'Specify output filename (bmp)')
+		.action((options: any) => this.pic2bmp(options));
 
 		this.program
 		.command('pgm2scr')
 		.description("Convert a png to background resource")
-		.requiredOption('--scr <path>', 'Specify output filename (eg 0013.scr)')
 		.requiredOption('--infile <path>', 'Specify input filename (pgm)')
+		.requiredOption('--scr <path>', 'Specify output filename (eg 0013.scr)')
 		.action((options: any) => this.pgm2scr(options));
 	}
 
