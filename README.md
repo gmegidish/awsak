@@ -46,9 +46,7 @@ Commands:
   pack [options]       Pack files
   compile [options]    Compile assembly to bytecode
   decompile [options]  Decompile bytecode into assembly
-  scr2pgm [options]    Convert background resource to a pgm
-  pal2act [options]    Convert a single palette into photoshop act format
-  pgm2scr [options]    Convert a png to background resource
+  pic2bmp [options]    Convert a .pic resource into .bmp
   help [command]       display help for command
 ```
 
