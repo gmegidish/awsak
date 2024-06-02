@@ -61,12 +61,20 @@ export class BufferedFile {
 		return (this.readByte() << 8) | this.readByte();
 	}
 
+	public readUint16LE(): number {
+		return (this.readByte() << 0) | (this.readByte() << 8);
+	}
+
 	public readUint16At(offset: number): number {
 		return (this.readByteAt(offset) << 8) | this.readByteAt(offset + 1);
 	}
 
 	public readUint32(): number {
 		return (this.readUint16() << 16) | this.readUint16();
+	}
+
+	public readUint32LE(): number {
+		return (this.readUint16LE() << 0) | (this.readUint16LE() << 16);
 	}
 
 	public readUint32At(offset: number): number {
