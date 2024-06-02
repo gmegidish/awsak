@@ -111,7 +111,7 @@ export class AWSAK {
 		this.configure();
 	}
 
-	private extract(options: { indir: string, outdir: string }) {
+	public extract(options: { indir: string, outdir: string }) {
 		const memlist = new MemlistReader();
 		memlist.parse(BufferedFile.openFile(`${options.indir}/Memlist.bin`));
 
@@ -695,7 +695,7 @@ export class AWSAK {
 		*/
 	}
 
-	private compile(options: { file: string, outfile: string }) {
+	public compile(options: { file: string, outfile: string }) {
 
 		// converts between a label and its offset in output buffer
 		const labelOffsets = new Map<string, number>();
@@ -932,7 +932,7 @@ export class AWSAK {
 		fs.writeFileSync(options.outfile, output.toUint8Array());
 	}
 
-	private decompile(options: { file: string }) {
+	public decompile(options: { file: string }) {
 
 		const buf = fs.readFileSync(options.file);
 		const reader = BufferedFile.open(buf);
@@ -987,7 +987,7 @@ export class AWSAK {
 		throw new Error("Unknown resource type " + resourceType);
 	}
 
-	private pack(options: { indir: string, outdir: string }) {
+	public pack(options: { indir: string, outdir: string }) {
 		const files = fs.readdirSync(options.indir)
 		.filter((file) => file.match(/^[0-9a-f]{4}\.(bin|snd|mus|pic|pal|shp|txt)$/))
 		.sort();
