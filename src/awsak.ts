@@ -278,6 +278,52 @@ export class AWSAK {
 		fs.writeFileSync(options.output, out.toUint8Array());
 	}
 
+	public bmp2pic(options: { infile: string, scr: string }) {
+		const buf = fs.readFileSync(options.infile);
+		const reader = BufferedFile.open(buf);
+		if (reader.readUint16LE() != 0x4d42) {
+			console.error("Not a valid .bmp file");
+			process.exit(1);
+		}
+
+		reader.seek(10);
+		const dataOffset = reader.readUint32LE();
+		const bmpSize = reader.readUint32LE();
+		const bmpWidth = reader.readUint32LE();
+		const bmpHeight = reader.readUint32LE();
+		const bmpPlanes = reader.readUint16LE();
+		const bmpBpp = reader.readUint16LE();
+		const bmpCompression = reader.readUint32LE();
+		if (bmpWidth !== 320 || bmpHeight !== 200 || bmpPlanes !== 1 || bmpBpp !== 8 || bmpCompression !== 0) {
+			console.error(`Expected a 320x200 8bpp 1plane no-compression .bmp file. Found ${bmpWidth}x${bmpHeight} ${bmpPlanes} ${bmpBpp} ${bmpCompression}`);
+			process.exit(1);
+		}
+
+		reader.seek(dataOffset + 256*4);
+		if (buf.length - reader.getOffset() != 320*200) {
+			console.error("Something's not okay with this .bmp");
+			process.exit(1);
+		}
+
+		const bitmap = reader.readBytes(bmpWidth * bmpHeight);
+
+		const output = OutputBufferedFile.create();
+		for (let plane = 0; plane < 4; plane++) {
+			for (let y = 0; y < 200; y++) {
+				for (let x = 0; x < 320; x += 8) {
+					let c = 0;
+					for (let b = 0; b < 8; b++) {
+						c = (c << 1) | ((bitmap[y * 320 + x + b] >> plane) & 1);
+					}
+
+					output.writeByte(c);
+				}
+			}
+		}
+
+		fs.writeFileSync(options.scr, output.toUint8Array());
+	}
+
 	public pic2bmp(options: { pic: string, palette: string, index: number, output: string }) {
 		const buf = fs.readFileSync(options.pic);
 		if (buf.length != 32000) {
@@ -1045,11 +1091,11 @@ export class AWSAK {
 		.action((options: any) => this.pic2bmp(options));
 
 		this.program
-		.command('pgm2scr')
-		.description("Convert a png to background resource")
-		.requiredOption('--infile <path>', 'Specify input filename (pgm)')
+		.command('bmp2pic')
+		.description("Convert a .bmp to background resource")
+		.requiredOption('--infile <path>', 'Specify input filename (bmp)')
 		.requiredOption('--scr <path>', 'Specify output filename (eg 0013.scr)')
-		.action((options: any) => this.pgm2scr(options));
+		.action((options: any) => this.bmp2pic(options));
 	}
 
 	public static main() {
