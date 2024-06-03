@@ -1,4 +1,3 @@
-import {Command} from 'commander';
 import {MemEntry} from "./mem-entry";
 import {BufferedFile} from "./io/buffered-file";
 import * as fs from "fs";
@@ -104,12 +103,6 @@ class ColorReader {
 }
 
 export class AWSAK {
-	private program: Command;
-
-	constructor() {
-		this.program = new Command();
-		this.configure();
-	}
 
 	public extract(options: { indir: string, outdir: string }) {
 		const memlist = new MemlistReader();
@@ -299,8 +292,8 @@ export class AWSAK {
 			process.exit(1);
 		}
 
-		reader.seek(dataOffset + 256*4);
-		if (buf.length - reader.getOffset() != 320*200) {
+		reader.seek(dataOffset + 256 * 4);
+		if (buf.length - reader.getOffset() != 320 * 200) {
 			console.error("Something's not okay with this .bmp");
 			process.exit(1);
 		}
@@ -1047,59 +1040,5 @@ export class AWSAK {
 		}
 
 		fs.writeFileSync(`${options.outdir}/Memlist.bin`, memlist.toUint8Array());
-	}
-
-	private configure() {
-		this.program
-		.name('Another World Swiss Army Knife - awsak')
-		.version('0.9.0');
-
-		this.program
-		.command('extract')
-		.description('Extract files')
-		.requiredOption('--indir <dir>', 'Specify input directory')
-		.requiredOption('--outdir <dir>', 'Specify output directory')
-		.action((options) => this.extract(options));
-
-		this.program
-		.command('pack')
-		.description('Pack files')
-		.requiredOption('--indir <dir>', 'Specify input directory')
-		.requiredOption('--outdir <dir>', 'Specify output directory')
-		.action((options) => this.pack(options));
-
-		this.program
-		.command('compile')
-		.description("Compile assembly to bytecode")
-		.requiredOption('--file <path>', 'Specify input filename to compile')
-		.requiredOption('--outfile <path>', 'Specify output filename')
-		.action((options) => this.compile(options));
-
-		this.program
-		.command('decompile')
-		.description("Decompile bytecode into assembly")
-		.requiredOption('--file <path>', 'Specify input filename to decompile')
-		.action((options) => this.decompile(options));
-
-		this.program
-		.command('pic2bmp')
-		.description("Convert a .pic resource to an 8-bit .bmp")
-		.requiredOption('--pic <filename>', 'Specify resource .pic filename')
-		.option('--palette <filename>', 'Specify resource .pal filename)')
-		.option('--index <filename>', 'Palette index within resource (0-31)')
-		.requiredOption('--output <filename>', 'Specify output filename (bmp)')
-		.action((options: any) => this.pic2bmp(options));
-
-		this.program
-		.command('bmp2pic')
-		.description("Convert a .bmp to background resource")
-		.requiredOption('--infile <path>', 'Specify input filename (bmp)')
-		.requiredOption('--scr <path>', 'Specify output filename (eg 0013.scr)')
-		.action((options: any) => this.bmp2pic(options));
-	}
-
-	public static main() {
-		const ref = new AWSAK();
-		ref.program.parse(process.argv);
 	}
 }
