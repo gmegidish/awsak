@@ -35,7 +35,6 @@ import {
 	TextOpcode
 } from "./opcodes/opcodes";
 import {DisassemblerOpcodeVisitor, LabelsOpcodeVisitor, OpcodeVisitor} from "./opcode-visitor";
-import {PgmUtils} from "./pgm-utils";
 import {Point, Polygon, SvgUtils} from "./svg-utils";
 import {BufferedFileSpy} from "./io/buffered-file-spy";
 import {VgaUtils} from "./vga-utils";
@@ -232,42 +231,6 @@ export class AWSAK {
 		}
 
 		return out;
-	}
-
-	private pgm2scr(options: { infile: string, scr: string }) {
-		const input = fs.readFileSync(options.infile).toString();
-		const buf = PgmUtils.pgm2scr(input);
-		fs.writeFileSync(options.scr, buf);
-	}
-
-	public pal2act(options: { palette: string, index: number, output: string }) {
-		const data = fs.readFileSync(options.palette);
-		const buf = BufferedFile.open(data);
-		buf.seek(options.index * 16 * 2);
-
-		const out = OutputBufferedFile.create();
-		for (let i = 0; i < 16; i++) {
-			const c = buf.readUint16();
-			const r = ((c >> 8) & 0xf) << 4;
-			const g = ((c >> 4) & 0xf) << 4;
-			const b = (c & 0xf) << 4;
-			out.writeByte(r);
-			out.writeByte(g);
-			out.writeByte(b);
-		}
-
-		for (let i = 16; i < 256; i++) {
-			out.writeByte(0);
-			out.writeByte(0);
-			out.writeByte(0);
-		}
-
-		out.writeByte(0x00);
-		out.writeByte(0x10);
-		out.writeByte(0xff);
-		out.writeByte(0xff);
-
-		fs.writeFileSync(options.output, out.toUint8Array());
 	}
 
 	public bmp2pic(options: { infile: string, scr: string }) {
