@@ -52,8 +52,8 @@ class Swiss {
 		program
 		.command('bmp2pic')
 		.description("Convert a .bmp to background resource")
-		.requiredOption('--infile <path>', 'Specify input filename (bmp)')
-		.requiredOption('--scr <path>', 'Specify output filename (eg 0013.scr)')
+		.requiredOption('--bmp <path>', 'Specify input filename (bmp)')
+		.requiredOption('--pic <path>', 'Specify output filename (eg 0013.pic)')
 		.action((options: any) => awsak.bmp2pic(options));
 
 		program.parse(argv);
