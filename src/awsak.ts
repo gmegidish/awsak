@@ -256,7 +256,8 @@ export class AWSAK {
 
 		reader.seek(dataOffset + 256 * 4);
 		if (buf.length - reader.getOffset() != 320 * 200) {
-			console.error("Something's not okay with this .bmp");
+			const leftover = buf.length - reader.getOffset();
+			console.error("Something's not okay with this .bmp. Leftover of " + leftover + " bytes");
 			process.exit(1);
 		}
 
