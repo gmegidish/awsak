@@ -1,10 +1,14 @@
 # Another World Swiss Army Knife (awsak)
 
-Another World Swiss Army Knife is a command-line tool for extracting and manipulating resources from Another World game for MSDOS.
+Another World Swiss Army Knife is a command-line tool for extracting and manipulating resources from 
+Another World game for MSDOS.
 
-At its current state, it's a very minimalistic and incomplete implementation, and was only used for [Another World Hebrew](https://github.com/gmegidish/another-world-hebrew) project.
+At its current state, it's a very minimalistic and incomplete implementation, and was only
+used for [Another World Hebrew](https://github.com/gmegidish/another-world-hebrew) project.
 
-For technical details about how this cli tool came to be, as well as other projects I've made during the years regarding Another World and Heart of The Alien, you are welcome to read at the [Another World Hebrew](https://github.com/gmegidish/another-world-hebrew) page. 
+For technical details about how this cli tool came to be, as well as other projects I've made during 
+the years regarding Another World and [Heart of The Alien](https://hota.sf.net), you are welcome to read 
+at the [Another World Hebrew](https://github.com/gmegidish/another-world-hebrew) page. 
 
 ## Features
 
@@ -78,7 +82,7 @@ To extract resources, use the `extract` command. Where `disk` is the source dire
 awsak extract --indir disk --outdir resources
 ```
 
-Upon completion, our `resources` directory will contains these files (and many others):
+Upon completion, our `resources` directory will contain these files (and many others):
 
 ```text
 0010.snd
@@ -90,7 +94,8 @@ Upon completion, our `resources` directory will contains these files (and many o
 0016.shp
 ```
 
-While there are no filenames in the `memlist.bin` file, awsak will use the resource number as the filename, and the resource type as extension:
+While there are no filenames in the `memlist.bin` file, awsak will use the resource number as the filename, 
+and the resource type as extension:
 
 ```text
 snd - sound files
@@ -100,7 +105,7 @@ txt - script files
 shp - shapes files (vector graphics)
 ```
 
-To back the resources back into a memlist file, use the `pack` command. So to reverse the process, simply run
+To back the resources back into a memlist file, use the `pack` command. So to reverse the process, simply run:
 
 ```bash
 awsak pack --indir resources --outdir disk
@@ -153,20 +158,31 @@ npm install -g .
 awsak --help
 ```
 
+## Future Work
+
+- Add support for lzss compression
+- Add support for custom palettes
+- Add support for sound resources
+- Convert svg files back to shape resources
+
+You may submit an issue [here](https://github.com/gmegidish/another-world-hebrew/issues).
+
 ## Contribution
 
-You might find awsak useful for your own project, but missing some functionality. If you want to help, please open an issue or a pull request. 
+You might find awsak useful for your own project, but missing some functionality. If you want to help, 
+please open an issue or a pull request. 
 
-As a rule of thumb, it's always preferred to submit 50 small pull-requests than one unmaintainable patch. I'll do my best to review and merge as soon as possible.
-
-## License
-
-This project is licensed under the GPL License - see the [LICENSE](LICENSE) file for details
+As a rule of thumb, it's always preferred to submit small a PR instead of one unmaintainable patch. I'll 
+do my best to review and merge as soon as possible.
 
 ## References
 
 * [Another World](https://www.mobygames.com/game/564/out-of-this-world/) on MobyGames
 * [Another World](https://www.gog.com/en/game/another_world_20th_anniversary_edition) on GOG
-* [Another World](https://anotherworld.fr/another_world.htm) on Eric Chahi's website. Includes screenshots of editor and assembly language.
+* [Another World](https://anotherworld.fr/another_world.htm) on Eric Chahi's website. Includes screenshots of editor and bytecode language.
 * Cyx's [Another World Interpreter](https://github.com/cyxx/rawgl) with support for most released versions.
 * [Fabien Sanglard's Another World](https://fabiensanglard.net/another_world_polygons/index.html) with detailed technical explanation of the game's engine.
+
+## License
+
+This project is licensed under the GPL License - see the [LICENSE](LICENSE) file for details
