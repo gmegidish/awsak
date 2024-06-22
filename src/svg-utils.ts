@@ -1,6 +1,11 @@
+export class Point {
+	constructor(public x: number, public y: number) {
+	}
+}
+
 export class Polygon {
-	public color: number;
-	public points: Array<[number, number]>;
+	constructor(public color: number, public points: Array<Point>) {
+	}
 }
 
 export class SvgUtils {
@@ -19,7 +24,7 @@ export class SvgUtils {
 			const items = [];
 			for (let j = 0; j < polygon.points.length; j++) {
 				const point = polygon.points[j];
-				items.push(`${point[0]},${point[1]}`);
+				items.push(`${point.x},${point.y}`);
 			}
 
 			const color256 = (polygon.color << 4) | polygon.color;

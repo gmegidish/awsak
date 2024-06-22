@@ -17,7 +17,7 @@ For technical details about how this cli tool came to be, as well as other proje
 
 ## Installation
 
-To get started, simply npm install awsak globally:
+To get started, simply npm install *awsak* globally:
 
 ```bash
 npm install -g git+https://github.com/gmegidish/awsak.git
@@ -134,6 +134,23 @@ L0159:  break
         dbra    v1      L0159
         setvec  8       L0290
         break
+```
+
+## Development
+
+Once you git clone the repository, and install the dependencies, you are good to go.
+
+You can run the cli without compiling it first using: 
+```bash
+ts-node src/cli.ts
+```
+
+Alternatively, if you want to make sure program is ready for distribution:
+```bash
+npm remove -g awsak
+npm run build
+npm install -g .
+awsak --help
 ```
 
 ## Contribution

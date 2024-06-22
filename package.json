@@ -1,26 +1,30 @@
 {
-  "name": "awsak",
-  "version": "1.0.0",
-  "description": "Another World Swiss Army Knife - cli tool for extracting and manipulating Another World for DOS resources",
-  "homepage": "https://github.com/gmegidish/awsak",
-  "bugs": {
-    "url": "https://github.com/gmegidish/awsak/issues"
-  },
-  "main": "index.ts",
-  "scripts": {
-    "lint": "./node_modules/.bin/eslint src/**/*"
-  },
-  "author": "Gil Megidish",
-  "license": "GPL",
-  "devDependencies": {
-    "@types/node": "^20.11.20",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "eslint": "^8.56.0",
-    "ts-node": "^8.3.0",
-    "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "assert": "^2.1.0",
-    "commander": "^12.0.0"
-  }
+	"name": "awsak",
+	"version": "1.0.0",
+	"description": "Another World Swiss Army Knife - cli tool for extracting and manipulating Another World for DOS resources",
+	"homepage": "https://github.com/gmegidish/awsak",
+	"bugs": {
+		"url": "https://github.com/gmegidish/awsak/issues"
+	},
+	"bin": {
+		"awsak": "dist/cli.js"
+	},
+	"main": "dist/cli.js",
+	"scripts": {
+		"build": "tsc",
+		"lint": "./node_modules/.bin/eslint src/**/*"
+	},
+	"author": "Gil Megidish",
+	"license": "GPL",
+	"devDependencies": {
+		"@types/node": "^20.11.20",
+		"@typescript-eslint/eslint-plugin": "^7.4.0",
+		"eslint": "^8.56.0",
+		"ts-node": "^8.3.0",
+		"typescript": "^5.3.3"
+	},
+	"dependencies": {
+		"assert": "^2.1.0",
+		"commander": "^12.0.0"
+	}
 }

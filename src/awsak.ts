@@ -36,7 +36,7 @@ import {
 } from "./opcodes/opcodes";
 import {DisassemblerOpcodeVisitor, LabelsOpcodeVisitor, OpcodeVisitor} from "./opcode-visitor";
 import {PgmUtils} from "./pgm-utils";
-import {Polygon, SvgUtils} from "./svg-utils";
+import {Point, Polygon, SvgUtils} from "./svg-utils";
 import {BufferedFileSpy} from "./io/buffered-file-spy";
 import {VgaUtils} from "./vga-utils";
 import assert = require("assert");
@@ -194,16 +194,15 @@ export class AWSAK {
 				// console.log("Single pixel at " + off + " with color " + color);
 			}
 
-			const polygon = new Polygon();
-			polygon.color = color;
-			polygon.points = [];
+			const polyPoints: Array<Point> = [];
 
 			for (let i = 0; i < npoints; i++) {
 				const tox = x1 + points[i].x;
 				const toy = y1 + points[i].y;
-				polygon.points.push([tox, toy]);
+				polyPoints.push(new Point(tox, toy));
 			}
 
+			const polygon = new Polygon(color, polyPoints);
 			return [polygon];
 		} else {
 			if ((type & 0x3f) == 2) {

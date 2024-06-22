@@ -1,5 +1,6 @@
+#!/usr/bin/env node
 import {Command} from "commander";
-import {AWSAK} from "./src/awsak";
+import {AWSAK} from "./awsak";
 
 class Swiss {
 
