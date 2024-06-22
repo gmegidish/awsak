@@ -7,10 +7,12 @@
 		"url": "https://github.com/gmegidish/awsak/issues"
 	},
 	"bin": {
-		"awsak": "dist/cli.js"
+		"awsak": "./dist/cli.js"
 	},
-	"main": "dist/cli.js",
+	"types": "./dist/awsak.d.ts",
+	"main": "./dist/cli.js",
 	"scripts": {
+		"start": "ts-node src/cli.ts",
 		"build": "tsc",
 		"lint": "./node_modules/.bin/eslint src/**/*"
 	},
