@@ -233,8 +233,8 @@ export class AWSAK {
 		return out;
 	}
 
-	public bmp2pic(options: { infile: string, scr: string }) {
-		const buf = fs.readFileSync(options.infile);
+	public bmp2pic(options: { bmp: string, pic: string }) {
+		const buf = fs.readFileSync(options.bmp);
 		const reader = BufferedFile.open(buf);
 		if (reader.readUint16LE() != 0x4d42) {
 			console.error("Not a valid .bmp file");
@@ -254,18 +254,18 @@ export class AWSAK {
 			process.exit(1);
 		}
 
-		reader.seek(dataOffset + 256 * 4);
-		if (buf.length - reader.getOffset() != 320 * 200) {
-			const leftover = buf.length - reader.getOffset();
+		if ((buf.length - dataOffset) != 320 * 200) {
+			const leftover = buf.length - dataOffset;
 			console.error("Something's not okay with this .bmp. Leftover of " + leftover + " bytes");
 			process.exit(1);
 		}
 
+		reader.seek(dataOffset);
 		const bitmap = reader.readBytes(bmpWidth * bmpHeight);
 
 		const output = OutputBufferedFile.create();
 		for (let plane = 0; plane < 4; plane++) {
-			for (let y = 0; y < 200; y++) {
+			for (let y = 199; y >= 0; y--) {
 				for (let x = 0; x < 320; x += 8) {
 					let c = 0;
 					for (let b = 0; b < 8; b++) {
@@ -277,7 +277,7 @@ export class AWSAK {
 			}
 		}
 
-		fs.writeFileSync(options.scr, output.toUint8Array());
+		fs.writeFileSync(options.pic, output.toUint8Array());
 	}
 
 	public pic2bmp(options: { pic: string, palette: string, index: number, output: string }) {
